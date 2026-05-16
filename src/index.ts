@@ -1,9 +1,7 @@
 import express, { Request, Response } from 'express';
 import path from 'path';
-import { Todo, TodoList } from './types';
 import { initializeStorage } from './storage';
 import { addTodo, deleteTodo, getTodos, toggleTodo } from './todoService';
-import { isTodoArray } from './utils';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
