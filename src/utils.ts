@@ -34,7 +34,3 @@ export function formatDateTime(date: Date = new Date()): string {
 export function isValidString(input: unknown, minLength = 1): input is string {
   return typeof input === 'string' && input.trim().length >= minLength;
 }
-
-export function formatTodoStatus(completed: boolean): string {
-  return completed ? '[DONE]   ' : '[ACTIVE] ';
-}

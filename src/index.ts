@@ -61,7 +61,7 @@ app.delete('/api/todos/:id', (req: Request, res: Response) => {
   }
 });
 
-app.get('', (_req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 

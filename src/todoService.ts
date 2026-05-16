@@ -15,10 +15,6 @@ export function getTodos(): TodoList {
   return readTodos();
 }
 
-export function setTodos(todos: TodoList): void {
-  writeTodos(todos);
-}
-
 export function addTodo(text: string): TodoServiceResult {
   if (!isValidString(text)) {
     return {
@@ -78,33 +74,6 @@ export function toggleTodo(id: string): TodoServiceResult {
     message: todos[index].completed
       ? 'Task marked as done.'
       : 'Task marked as active.',
-  };
-}
-
-export function completeTodo(id: string): TodoServiceResult {
-  const todos = readTodos();
-  const index = findTodoIndex(todos, id);
-
-  if (index === -1) {
-    return {
-      success: false,
-      message: 'Task not found.',
-    };
-  }
-
-  if (todos[index].completed) {
-    return {
-      success: false,
-      message: 'Task is already marked as done.',
-    };
-  }
-
-  todos[index] = { ...todos[index], completed: true };
-  writeTodos(todos);
-
-  return {
-    success: true,
-    message: `Task marked as done: "${todos[index].text}"`,
   };
 }
 

@@ -1,5 +1,3 @@
-export type TodoStatus = 'active' | 'done';
-
 export interface Todo {
   id: string;
   text: string;
