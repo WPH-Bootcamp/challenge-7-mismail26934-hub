@@ -2,13 +2,7 @@ import express, { Request, Response } from 'express';
 import path from 'path';
 import { Todo, TodoList } from './types';
 import { initializeStorage } from './storage';
-import {
-  addTodo,
-  deleteTodo,
-  getTodos,
-  seedTodos,
-  toggleTodo,
-} from './todoService';
+import { addTodo, deleteTodo, getTodos, toggleTodo } from './todoService';
 import { isTodoArray } from './utils';
 
 const app = express();
@@ -51,7 +45,7 @@ app.post('/api/todos', (req: Request, res: Response) => {
 
 app.patch('/api/todos/:id/toggle', (req: Request, res: Response) => {
   try {
-    sendServiceResult(res, toggleTodo(req.params.id));
+    sendServiceResult(res, toggleTodo(req.params.id as string));
   } catch (error) {
     const message =
       error instanceof Error ? error.message : 'Failed to toggle todo';
@@ -61,7 +55,7 @@ app.patch('/api/todos/:id/toggle', (req: Request, res: Response) => {
 
 app.delete('/api/todos/:id', (req: Request, res: Response) => {
   try {
-    sendServiceResult(res, deleteTodo(req.params.id));
+    sendServiceResult(res, deleteTodo(req.params.id as string));
   } catch (error) {
     const message =
       error instanceof Error ? error.message : 'Failed to delete todo';
@@ -69,27 +63,7 @@ app.delete('/api/todos/:id', (req: Request, res: Response) => {
   }
 });
 
-app.put('/api/todos/seed', (req: Request, res: Response) => {
-  try {
-    const todos: unknown = req.body?.todos;
-
-    if (!isTodoArray(todos)) {
-      res.status(400).json({
-        success: false,
-        message: 'Invalid todo data format.',
-      });
-      return;
-    }
-
-    sendServiceResult(res, seedTodos(todos as TodoList));
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : 'Failed to seed todos';
-    res.status(500).json({ success: false, message });
-  }
-});
-
-app.get('*', (_req: Request, res: Response) => {
+app.get('', (_req: Request, res: Response) => {
   res.sendFile(path.join(PUBLIC_DIR, 'index.html'));
 });
 

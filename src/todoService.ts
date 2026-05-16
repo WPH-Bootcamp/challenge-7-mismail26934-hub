@@ -127,11 +127,3 @@ export function deleteTodo(id: string): TodoServiceResult {
     message: 'Task deleted.',
   };
 }
-
-export function seedTodos(todos: TodoList): TodoServiceResult {
-  writeTodos(todos);
-  return {
-    success: true,
-    message: 'Initial tasks loaded successfully.',
-  };
-}
