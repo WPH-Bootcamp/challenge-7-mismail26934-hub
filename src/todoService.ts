@@ -1,24 +1,137 @@
-// TODO: Import tipe-tipe yang sudah didefinisikan di types.ts
+import { Todo, TodoList, TodoServiceResult } from './types';
+import { formatDateTime, isValidString } from './utils';
+import { readTodos, writeTodos } from './storage';
+import { randomUUID } from 'node:crypto';
 
-// TODO: Import fungsi storage untuk baca/tulis file
+function generateId(): string {
+  return randomUUID();
+}
 
-// TODO: Buat fungsi untuk menambahkan To-Do baru
-// - Generate id yang unik (bisa pakai timestamp atau counter)
-// - Pastikan text tidak kosong
-// - Set default status sebagai active
+function findTodoIndex(todos: TodoList, id: string): number {
+  return todos.findIndex((todo) => todo.id === id);
+}
 
-// TODO: Buat fungsi untuk menandai To-Do sebagai selesai
-// - Cari To-Do berdasarkan id
-// - Ubah statusnya menjadi completed
-// - Handle kasus jika id tidak ditemukan
+export function getTodos(): TodoList {
+  return readTodos();
+}
 
-// TODO: Buat fungsi untuk menghapus To-Do
-// - Filter To-Do berdasarkan id
-// - Handle kasus jika id tidak ditemukan
+export function setTodos(todos: TodoList): void {
+  writeTodos(todos);
+}
 
-// TODO: Buat fungsi untuk menampilkan semua To-Do
-// - Tampilkan dengan format yang rapi
-// - Tambahkan status [ACTIVE] atau [DONE] di depan setiap To-Do
-// - Berikan nomor urut untuk memudahkan user memilih
+export function addTodo(text: string): TodoServiceResult {
+  if (!isValidString(text)) {
+    return {
+      success: false,
+      message: 'Task title cannot be empty.',
+    };
+  }
 
-// TODO: Buat fungsi untuk mencari To-Do berdasarkan keyword
+  const cleanedText = text.trim();
+  const todos = readTodos();
+  const duplicateIndex = todos.findIndex(
+    (item) => item.text.toLowerCase() === cleanedText.toLowerCase()
+  );
+
+  if (duplicateIndex !== -1) {
+    return {
+      success: false,
+      message: 'Duplicate Task',
+    };
+  }
+
+  const newTodo: Todo = {
+    id: generateId(),
+    text: cleanedText,
+    completed: false,
+    createdAt: formatDateTime(),
+  };
+
+  todos.push(newTodo);
+  writeTodos(todos);
+
+  return {
+    success: true,
+    message: 'Task added.',
+  };
+}
+
+export function toggleTodo(id: string): TodoServiceResult {
+  const todos = readTodos();
+  const index = findTodoIndex(todos, id);
+
+  if (index === -1) {
+    return {
+      success: false,
+      message: 'Task not found.',
+    };
+  }
+
+  todos[index] = {
+    ...todos[index],
+    completed: !todos[index].completed,
+  };
+  writeTodos(todos);
+
+  return {
+    success: true,
+    message: todos[index].completed
+      ? 'Task marked as done.'
+      : 'Task marked as active.',
+  };
+}
+
+export function completeTodo(id: string): TodoServiceResult {
+  const todos = readTodos();
+  const index = findTodoIndex(todos, id);
+
+  if (index === -1) {
+    return {
+      success: false,
+      message: 'Task not found.',
+    };
+  }
+
+  if (todos[index].completed) {
+    return {
+      success: false,
+      message: 'Task is already marked as done.',
+    };
+  }
+
+  todos[index] = { ...todos[index], completed: true };
+  writeTodos(todos);
+
+  return {
+    success: true,
+    message: `Task marked as done: "${todos[index].text}"`,
+  };
+}
+
+export function deleteTodo(id: string): TodoServiceResult {
+  const todos = readTodos();
+  const index = findTodoIndex(todos, id);
+
+  if (index === -1) {
+    return {
+      success: false,
+      message: 'Task not found.',
+    };
+  }
+
+  todos.splice(index, 1);
+  writeTodos(todos);
+
+  return {
+    success: true,
+    message: 'Task deleted.',
+  };
+}
+
+export function seedTodos(todos: TodoList): TodoServiceResult {
+  writeTodos(todos);
+  return {
+    success: true,
+    message: 'Initial tasks loaded successfully.',
+  };
+}
