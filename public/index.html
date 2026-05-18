@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Assignment 7 - To-Do App</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="container">
+      <div class="app-header">
+        <h1>To-Do App</h1>
+        <div class="header-actions">
+          <button type="button" id="search-toggle" class="search-toggle">
+            Search
+          </button>
+          <button
+            type="button"
+            id="search-close"
+            class="search-close hidden"
+            hidden
+          >
+            Close
+          </button>
+        </div>
+      </div>
+
+      <div class="task-bar" id="task-bar">
+        <form id="todo-form" class="todo-form">
+          <input
+            type="text"
+            id="todo-input"
+            placeholder="Add a new task..."
+            autocomplete="off"
+          />
+          <button type="submit">Add Task</button>
+        </form>
+      </div>
+
+      <div id="search-panel" class="search-panel hidden" hidden>
+        <input
+          type="search"
+          id="search-input"
+          class="search-input"
+          placeholder="Search tasks..."
+          autocomplete="off"
+          aria-label="Search tasks"
+        />
+      </div>
+
+      <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+
+      <ul id="todo-list" class="todo-list"></ul>
+    </main>
+
+    <script type="module" src="/client/app.js"></script>
+  </body>
+</html>
